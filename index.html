@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>glowup lab | Diagnostico de Presenca</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="ambient" aria-hidden="true">
+    <span class="glow glow-one"></span>
+    <span class="glow glow-two"></span>
+    <span class="glow glow-three"></span>
+  </div>
+
+  <header class="topbar">
+    <div class="brand-block">
+      <p class="brand">glowup lab</p>
+      <p class="brand-sub">Mapa de presenca, confianca e atracao</p>
+    </div>
+    <p class="proof-pill"><strong>12.487</strong> mapas ja gerados</p>
+  </header>
+
+  <main class="page">
+    <section class="shell">
+      <article id="quizCard" class="card quiz-card">
+        <section class="progress-block">
+          <div class="progress-row">
+            <p id="stepLabel" class="step-label">Etapa 1 de 5</p>
+            <p id="stepHint" class="step-hint">Descubra seu bloqueio principal</p>
+          </div>
+          <div class="progress-track" aria-hidden="true">
+            <div id="progressFill" class="progress-fill"></div>
+          </div>
+          <p id="intelLine" class="intel-line">Resposta usada para mapear seu eixo de presenca</p>
+        </section>
+
+        <section class="question-wrap">
+          <p class="question-kicker">Diagnostico de entrada social</p>
+          <h1 id="questionText" class="question-title"></h1>
+          <p id="supportText" class="question-support"></p>
+        </section>
+
+        <section id="optionGrid" class="option-grid" aria-label="Opcoes do diagnostico"></section>
+        <p id="impactLine" class="impact-line" aria-live="polite"></p>
+
+        <div class="actions">
+          <button id="backBtn" type="button" class="btn btn-back">Voltar</button>
+          <button id="nextBtn" type="button" class="btn btn-primary magnet-btn" disabled>Descobrir meu padrao</button>
+        </div>
+
+        <p class="footer-micro">Sem cadastro. Seu perfil e analisado em tempo real para montar seu mapa.</p>
+      </article>
+
+      <article id="resultCard" class="card result-card hidden" aria-live="polite">
+        <p class="result-kicker">Mapa final liberado</p>
+        <h2 id="resultTitle" class="result-title"></h2>
+        <p id="resultSummary" class="result-summary"></p>
+
+        <section class="score-grid" aria-label="Indicadores do diagnostico">
+          <div class="score-card">
+            <p class="score-label">Presenca atual</p>
+            <p id="presenceScore" class="score-value">0%</p>
+          </div>
+          <div class="score-card">
+            <p class="score-label">Bloqueio ativo</p>
+            <p id="blockScore" class="score-value">0%</p>
+          </div>
+          <div class="score-card">
+            <p class="score-label">Pronto para evoluir</p>
+            <p id="readyScore" class="score-value">0%</p>
+          </div>
+        </section>
+
+        <section class="insight-grid">
+          <div class="insight-card">
+            <h3>Ponto cego principal</h3>
+            <p id="coreBlock"></p>
+          </div>
+          <div class="insight-card">
+            <h3>Se voce nao ajustar agora</h3>
+            <p id="futureRisk"></p>
+          </div>
+        </section>
+
+        <section class="diagnostic-box">
+          <h3>Tracos detectados no seu perfil</h3>
+          <ul id="diagnosticList" class="diagnostic-list"></ul>
+        </section>
+
+        <section class="offer-box">
+          <p class="offer-kicker">Plano recomendado para este perfil</p>
+          <h3 id="productName"></h3>
+          <p id="productPitch"></p>
+          <ul class="pitch-list">
+            <li>Rotina curta para visual, postura e comunicacao</li>
+            <li>Roteiros objetivos para interacoes online e presencial</li>
+            <li>Execucao guiada para manter consistencia sem depender de motivacao</li>
+          </ul>
+
+          <div class="offer-badges" aria-hidden="true">
+            <span id="spotsBadge">27 vagas neste lote</span>
+            <span>Garantia de 7 dias</span>
+            <span>Acesso imediato</span>
+          </div>
+
+          <p id="offerLine" class="offer-line"></p>
+          <button id="ctaBtn" type="button" class="btn btn-primary btn-full magnet-btn">Quero meu plano agora</button>
+          <p class="offer-footnote">Pagamento seguro e acesso liberado logo apos a confirmacao.</p>
+        </section>
+      </article>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 222 61% 8%;
+    --foreground: 216 100% 97%;
+    --card: 216 44% 13%;
+    --card-foreground: 216 100% 97%;
+    --popover: 217 52% 10%;
+    --popover-foreground: 216 100% 97%;
+    --primary: 152 94% 62%;
+    --primary-foreground: 150 88% 10%;
+    --secondary: 214 48% 18%;
+    --secondary-foreground: 214 100% 93%;
+    --muted: 214 45% 19%;
+    --muted-foreground: 213 28% 70%;
+    --accent: 194 97% 58%;
+    --accent-foreground: 214 100% 96%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 211 43% 31%;
+    --input: 212 43% 28%;
+    --ring: 154 90% 60%;
+    --radius: 0.95rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: "Sora", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+      sans-serif;
+  }
+}
+
+@layer utilities {
+  .ambient-gradient {
+    background:
+      radial-gradient(circle at 8% 9%, rgba(44, 110, 158, 0.32) 0%, transparent 38%),
+      radial-gradient(circle at 91% 78%, rgba(28, 101, 139, 0.28) 0%, transparent 42%),
+      linear-gradient(148deg, #040913 0%, #0b1f35 58%, #0a223a 100%);
+  }
+}
