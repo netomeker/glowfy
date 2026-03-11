@@ -3,7 +3,7 @@
   ctaEventName: "quiz_cta_click",
   source: "glowfy_quiz_presenca",
   limitedSpots: 27,
-  promoDeadlineFallback: "hoje às 23:59",
+  promoDeadlineFallback: "0s",
   promoWindowMinHours: 5,
   promoWindowMaxHours: 8,
 };
@@ -24,7 +24,7 @@ const DEFAULT_RESULT_COPY_CONFIG = {
       transition: "Foi para isso que criamos o Glowfy.",
       explanation:
         "Você recebe um plano simples para evoluir aparência, lábia, postura e confiança no dia a dia.",
-      urgency: "Promoção por tempo limitado: condição especial disponível até {{promoDeadline}}.",
+      urgency: "Oferta por tempo limitado: termina em {{promoDeadline}}.",
       scarcity: "Vagas limitadas nesta turma: {{limitedSpots}} acessos restantes.",
       bullets: [
         "O erro comum que faz muita gente parecer menos confiante sem perceber.",
@@ -45,7 +45,7 @@ const DEFAULT_RESULT_COPY_CONFIG = {
       transition: "Foi para isso que criamos o Glowfy.",
       explanation:
         "Você recebe um plano simples para evoluir aparência, lábia, postura e confiança no dia a dia.",
-      urgency: "Promoção por tempo limitado: condição especial disponível até {{promoDeadline}}.",
+      urgency: "Oferta por tempo limitado: termina em {{promoDeadline}}.",
       scarcity: "Vagas limitadas nesta turma: {{limitedSpots}} acessos restantes.",
       bullets: [
         "O erro comum que faz muita gente parecer menos confiante sem perceber.",
@@ -67,7 +67,7 @@ const DEFAULT_RESULT_COPY_CONFIG = {
       transition: "Foi para isso que criamos o Glowfy.",
       explanation:
         "Você recebe um plano simples para evoluir aparência, lábia, postura e confiança no dia a dia.",
-      urgency: "Promoção por tempo limitado: condição especial disponível até {{promoDeadline}}.",
+      urgency: "Oferta por tempo limitado: termina em {{promoDeadline}}.",
       scarcity: "Vagas limitadas nesta turma: {{limitedSpots}} acessos restantes.",
       bullets: [
         "O erro comum que faz muita gente parecer menos confiante sem perceber.",
@@ -442,6 +442,7 @@ let latestResultPayload = null;
 const MOBILE_QUERY = "(max-width: 720px)";
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 let promoWindow = getOrCreatePromoWindow();
+let promoCountdownIntervalId = null;
 
 function isMobileViewport() {
   return window.matchMedia(MOBILE_QUERY).matches;
@@ -580,32 +581,21 @@ function getOrCreatePromoWindow() {
 }
 
 function formatPromoDeadline(expiresAt) {
-  const now = new Date();
-  const end = new Date(expiresAt);
-  const sameDay = now.toDateString() === end.toDateString();
+  const remainingMs = Math.max(0, expiresAt - Date.now());
+  const totalSeconds = Math.ceil(remainingMs / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
 
-  const tomorrow = new Date(now);
-  tomorrow.setDate(now.getDate() + 1);
-  const isTomorrow = tomorrow.toDateString() === end.toDateString();
-
-  const timeLabel = end.toLocaleTimeString("pt-BR", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-
-  if (sameDay) {
-    return `hoje às ${timeLabel}`;
+  if (hours > 0) {
+    return `${hours}h ${String(minutes).padStart(2, "0")}min`;
   }
 
-  if (isTomorrow) {
-    return `amanhã às ${timeLabel}`;
+  if (minutes > 0) {
+    return `${minutes}min ${String(seconds).padStart(2, "0")}s`;
   }
 
-  const dateLabel = end.toLocaleDateString("pt-BR", {
-    day: "2-digit",
-    month: "2-digit",
-  });
-  return `${dateLabel} às ${timeLabel}`;
+  return `${seconds}s`;
 }
 
 function getPromoDeadlineLabel() {
@@ -622,6 +612,33 @@ function getPromoDeadlineLabel() {
   }
 
   return formatPromoDeadline(promoWindow.expiresAt);
+}
+
+function stopPromoCountdown() {
+  if (promoCountdownIntervalId !== null) {
+    window.clearInterval(promoCountdownIntervalId);
+    promoCountdownIntervalId = null;
+  }
+}
+
+function startPromoCountdown(profileCopy, tokens) {
+  stopPromoCountdown();
+
+  const refreshUrgency = () => {
+    if (resultCard.classList.contains("hidden")) {
+      stopPromoCountdown();
+      return;
+    }
+
+    const dynamicTokens = {
+      ...tokens,
+      promoDeadline: getPromoDeadlineLabel(),
+    };
+    urgencyLine.textContent = interpolateTokens(profileCopy.urgency, dynamicTokens);
+  };
+
+  refreshUrgency();
+  promoCountdownIntervalId = window.setInterval(refreshUrgency, 1000);
 }
 
 function interpolateTokens(text, tokens) {
@@ -811,6 +828,7 @@ function renderOptions(stepData, selectedIndex) {
 }
 
 function renderStep() {
+  stopPromoCountdown();
   animateCardShift();
   const stepData = QUIZ_STEPS[currentStep];
   const selected = answers[currentStep];
@@ -900,9 +918,9 @@ function buildResult() {
   confidenceLine.textContent = interpolateTokens(profileCopy.confidenceBase, tokens);
   objectionLine.textContent = interpolateTokens(profileCopy.consequence, tokens);
   breakLine.textContent = `${interpolateTokens(profileCopy.opportunity, tokens)} ${interpolateTokens(profileCopy.transition, tokens)} ${interpolateTokens(profileCopy.explanation, tokens)}`;
-  urgencyLine.textContent = interpolateTokens(profileCopy.urgency, tokens);
   scarcityLine.textContent = interpolateTokens(profileCopy.scarcity, tokens);
   accessNote.textContent = interpolateTokens(profileCopy.accessNote, tokens);
+  startPromoCountdown(profileCopy, tokens);
 
   curiosityList.innerHTML = "";
   profileCopy.bullets.slice(0, 3).forEach((bulletText) => {
